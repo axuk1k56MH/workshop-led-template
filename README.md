@@ -34,6 +34,8 @@ workshop-led-template
 
 ## PC テスト
 
+バックエンドとフロントエンドをまとめて試す場合:
+
 ```bash
 cd backend
 python3 -m venv .venv
@@ -46,6 +48,19 @@ USE_MOCK_GPIO=1 python app.py
 
 ```text
 http://127.0.0.1:8000
+```
+
+フロントエンドだけ別ポートで配信して、バックエンドAPIへ接続する場合:
+
+```bash
+cd frontend
+python3 -m http.server 5500
+```
+
+ブラウザで次を開きます。
+
+```text
+http://127.0.0.1:5500/?api=http://127.0.0.1:8000
 ```
 
 ## Raspberry Pi 本番配置

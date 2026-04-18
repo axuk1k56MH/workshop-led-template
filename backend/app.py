@@ -294,6 +294,16 @@ async def index() -> FileResponse:
     return FileResponse(FRONTEND_DIR / "index.html")
 
 
+@app.get("/style.css")
+async def stylesheet() -> FileResponse:
+    return FileResponse(FRONTEND_DIR / "style.css")
+
+
+@app.get("/script.js")
+async def script() -> FileResponse:
+    return FileResponse(FRONTEND_DIR / "script.js")
+
+
 if __name__ == "__main__":
     import uvicorn
 
