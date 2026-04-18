@@ -1,19 +1,48 @@
 # Wi-Fi LED Workshop
 
-ブラウザから Raspberry Pi の GPIO LED を操作する、教育用 IoT 体験テンプレートです。
+Raspberry Pi を Wi-Fi 親機にして、参加者がスマホやPCのブラウザから GPIO LED を操作する教育用 IoT ワークショップテンプレートです。
 
-## 構成
+## What This Provides
+
+- Raspberry Pi 上の FastAPI による LED 操作API
+- PC/Macテスト用のモックGPIO
+- スマホ向けWeb UI
+- Raspberry Pi を Wi-Fi アクセスポイントにするための設定手順
+- nginx と systemd の本番配置ファイル
+
+## Recommended Setup
+
+本番授業では、次の構成を推奨します。
+
+```text
+スマホ / PC
+  ↓ Wi-Fi: LCHIKA-A
+Raspberry Pi: 192.168.4.1
+  ├ nginx :80
+  │   ├ Web UI
+  │   └ /api/ → FastAPI :8000
+  ├ FastAPI
+  └ GPIO LED
+```
+
+参加者は班のSSIDへ接続し、ブラウザで次を開きます。
+
+```text
+http://192.168.4.1
+```
+
+## Directory Layout
 
 ```text
 workshop-led-template
 ├── backend
 │   ├── app.py
 │   └── requirements.txt
-├── backend-ui
+├── frontend
 │   ├── index.html
 │   ├── script.js
 │   └── style.css
-├── frontend
+├── backend-ui
 │   ├── index.html
 │   ├── script.js
 │   └── style.css
@@ -26,6 +55,76 @@ workshop-led-template
     └── led-workshop-api.service
 ```
 
+`frontend` が本番推奨の新UIです。`backend-ui` は前UIを残した切替用です。
+
+## Quick Start On Mac / PC
+
+```bash
+git clone <repository-url>
+cd workshop-led-template/backend
+python3 -m venv .venv
+. .venv/bin/activate
+pip install -r requirements.txt
+USE_MOCK_GPIO=1 python app.py
+```
+
+ブラウザで開きます。
+
+```text
+http://127.0.0.1:8000
+```
+
+この `8000` では FastAPI が `backend-ui` の前UIを配信します。API確認用として手早く使えます。
+
+## Test The New UI
+
+新UIを開発・確認する場合は、バックエンドを起動したまま別ターミナルで実行します。
+
+```bash
+cd workshop-led-template/frontend
+python3 -m http.server 5500 --bind 0.0.0.0
+```
+
+Mac/PCのブラウザ:
+
+```text
+http://127.0.0.1:5500/?api=http://127.0.0.1:8000
+```
+
+同じWi-Fi上のスマホ:
+
+```text
+http://<MacのIP>:5500/?api=http://<MacのIP>:8000
+```
+
+例:
+
+```text
+http://192.168.12.4:5500/?api=http://192.168.12.4:8000
+```
+
+## Raspberry Pi Deployment
+
+1. このリポジトリを Raspberry Pi の `/opt/workshop-led-template` に配置
+2. `backend` に Python venv を作成して依存関係をインストール
+3. `systemd/led-workshop-api.service` を systemd に登録
+4. nginx 設定を配置
+5. `pi-setup/AP_SETUP.md` に沿って Wi-Fi AP を設定
+
+新UIを本番配信する場合:
+
+```bash
+sudo cp /opt/workshop-led-template/pi-setup/nginx-site-frontend.conf /etc/nginx/sites-available/led-workshop
+```
+
+前UIを本番配信する場合:
+
+```bash
+sudo cp /opt/workshop-led-template/pi-setup/nginx-site-legacy.conf /etc/nginx/sites-available/led-workshop
+```
+
+詳細は [pi-setup/AP_SETUP.md](pi-setup/AP_SETUP.md) を参照してください。
+
 ## API
 
 - `GET /api/health`
@@ -37,49 +136,6 @@ workshop-led-template
 - `POST /api/preset/chase`
 
 `led_id` は `led1`、`led2`、`led3` です。
-
-## PC テスト
-
-バックエンドとフロントエンドをまとめて試す場合:
-
-```bash
-cd backend
-python3 -m venv .venv
-. .venv/bin/activate
-pip install -r requirements.txt
-USE_MOCK_GPIO=1 python app.py
-```
-
-ブラウザで次を開きます。
-
-```text
-http://127.0.0.1:8000
-```
-
-`8000` は FastAPI が配信する前UIです。
-
-フロントエンドだけ別ポートで配信して、バックエンドAPIへ接続する場合:
-
-```bash
-cd frontend
-python3 -m http.server 5500
-```
-
-ブラウザで次を開きます。
-
-```text
-http://127.0.0.1:5500/?api=http://127.0.0.1:8000
-```
-
-`5500` は `frontend` ディレクトリの新UIです。APIだけ `8000` のバックエンドへ向けます。
-
-## Raspberry Pi 本番配置
-
-1. リポジトリを `/opt/workshop-led-template` に配置
-2. `backend` に venv を作成して `pip install -r requirements.txt`
-3. `systemd/led-workshop-api.service` を `/etc/systemd/system/` へ配置
-4. 新UIなら `pi-setup/nginx-site-frontend.conf`、前UIなら `pi-setup/nginx-site-legacy.conf` を nginx に配置
-5. `pi-setup/AP_SETUP.md` に沿って Wi-Fi AP を設定
 
 ## GPIO
 
@@ -94,3 +150,7 @@ http://127.0.0.1:5500/?api=http://127.0.0.1:8000
 ```text
 GPIO ---- 330ohm ---- LED ---- GND
 ```
+
+## Specification
+
+設計仕様は [SPEC.md](SPEC.md) にまとめています。
