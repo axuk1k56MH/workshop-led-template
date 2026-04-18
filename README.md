@@ -155,3 +155,30 @@ GPIO ---- 330ohm ---- LED ---- GND
 ## Specification
 
 設計仕様は [SPEC.md](SPEC.md) にまとめています。
+
+## Publish To GitHub
+
+GitHubで空のリポジトリを作成したあと、ローカルからリモートを追加してpushします。
+
+```bash
+git remote add origin git@github.com:<your-account>/<repository-name>.git
+git push -u origin main
+```
+
+HTTPS URLを使う場合:
+
+```bash
+git remote add origin https://github.com/<your-account>/<repository-name>.git
+git push -u origin main
+```
+
+すでに `origin` を追加済みの場合は、URLだけ確認してpushします。
+
+```bash
+git remote -v
+git push -u origin main
+```
+
+## License
+
+MIT License. See [LICENSE](LICENSE).
