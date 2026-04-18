@@ -9,6 +9,10 @@ workshop-led-template
 ├── backend
 │   ├── app.py
 │   └── requirements.txt
+├── backend-ui
+│   ├── index.html
+│   ├── script.js
+│   └── style.css
 ├── frontend
 │   ├── index.html
 │   ├── script.js
@@ -50,6 +54,8 @@ USE_MOCK_GPIO=1 python app.py
 http://127.0.0.1:8000
 ```
 
+`8000` は FastAPI が配信する前UIです。
+
 フロントエンドだけ別ポートで配信して、バックエンドAPIへ接続する場合:
 
 ```bash
@@ -62,6 +68,8 @@ python3 -m http.server 5500
 ```text
 http://127.0.0.1:5500/?api=http://127.0.0.1:8000
 ```
+
+`5500` は `frontend` ディレクトリの新UIです。APIだけ `8000` のバックエンドへ向けます。
 
 ## Raspberry Pi 本番配置
 
