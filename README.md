@@ -156,6 +156,13 @@ GPIO ---- 330ohm ---- LED ---- GND
 
 設計仕様は [SPEC.md](SPEC.md) にまとめています。
 
+## Setup Handout
+
+Raspberry Pi 導入手順の配布用PDFを用意しています。
+
+- [docs/raspberry-pi-setup-public.pdf](docs/raspberry-pi-setup-public.pdf)
+- [docs/raspberry-pi-setup-public.md](docs/raspberry-pi-setup-public.md)
+
 ## Publish To GitHub
 
 GitHubで空のリポジトリを作成したあと、ローカルからリモートを追加してpushします。
