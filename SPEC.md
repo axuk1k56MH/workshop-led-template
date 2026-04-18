@@ -95,13 +95,13 @@ Raspberry Pi
 本番推奨UI:
 
 - `frontend`
-- スマホ操作を優先した新UI
+- 標準UI
 - nginxでは `nginx-site-frontend.conf` で配信
 
 任意UI:
 
-- `backend-ui`
-- 前UIの保存版
+- `examples/legacy-ui`
+- 以前のスマホ向けUIの保存版
 - デモや比較用
 - nginxでは `nginx-site-legacy.conf` で配信
 

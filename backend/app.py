@@ -284,24 +284,24 @@ async def preset_chase(request: ChaseRequest) -> dict[LedId, LedMode]:
     return await controller.chase(request.interval_ms, request.cycles)
 
 
-BACKEND_UI_DIR = Path(__file__).resolve().parent.parent / "backend-ui"
-if BACKEND_UI_DIR.exists():
-    app.mount("/assets", StaticFiles(directory=BACKEND_UI_DIR), name="backend-ui-assets")
+FRONTEND_DIR = Path(__file__).resolve().parent.parent / "frontend"
+if FRONTEND_DIR.exists():
+    app.mount("/assets", StaticFiles(directory=FRONTEND_DIR), name="frontend-assets")
 
 
 @app.get("/")
 async def index() -> FileResponse:
-    return FileResponse(BACKEND_UI_DIR / "index.html")
+    return FileResponse(FRONTEND_DIR / "index.html")
 
 
 @app.get("/style.css")
 async def stylesheet() -> FileResponse:
-    return FileResponse(BACKEND_UI_DIR / "style.css")
+    return FileResponse(FRONTEND_DIR / "style.css")
 
 
 @app.get("/script.js")
 async def script() -> FileResponse:
-    return FileResponse(BACKEND_UI_DIR / "script.js")
+    return FileResponse(FRONTEND_DIR / "script.js")
 
 
 if __name__ == "__main__":

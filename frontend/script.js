@@ -5,15 +5,11 @@ const API_BASE =
   window.localStorage.getItem("ledWorkshopApiBase") ||
   "";
 
-const connectionBadge = document.querySelector("#connectionBadge");
-const connectionText = document.querySelector("#connectionText");
-const errorMessage = document.querySelector("#errorMessage");
-const offlinePanel = document.querySelector("#offlinePanel");
-const retryButton = document.querySelector("#retryButton");
+const healthDot = document.querySelector("#healthDot");
+const healthText = document.querySelector("#healthText");
 const chaseInterval = document.querySelector("#chaseInterval");
 const chaseIntervalOutput = document.querySelector("#chaseIntervalOutput");
 const chaseCycles = document.querySelector("#chaseCycles");
-const chaseCyclesOutput = document.querySelector("#chaseCyclesOutput");
 
 let refreshTimer = null;
 let busy = false;
@@ -35,63 +31,23 @@ async function apiRequest(path, options = {}) {
   return response.json();
 }
 
-function setConnection(status) {
-  connectionBadge.classList.toggle("is-connected", status === "connected");
-  connectionBadge.classList.toggle("is-disconnected", status === "disconnected");
-  connectionBadge.classList.toggle("is-checking", status === "checking");
-
-  connectionText.textContent =
-    status === "connected" ? "Connected" : status === "disconnected" ? "Offline" : "Checking...";
-
-  offlinePanel.classList.toggle("is-hidden", status !== "disconnected");
-  setControlsDisabled(status !== "connected");
-}
-
-function setControlsDisabled(disabled) {
-  document.querySelectorAll("[data-action], #allOffButton, #chaseButton, input").forEach((control) => {
-    control.disabled = disabled || busy;
-  });
-}
-
-function showError(message) {
-  errorMessage.textContent = message;
-  errorMessage.classList.remove("is-hidden");
-}
-
-function clearError() {
-  errorMessage.textContent = "";
-  errorMessage.classList.add("is-hidden");
-}
-
-function normalizeMode(value) {
-  if (typeof value === "string") return value;
-  if (value && typeof value.status === "string") return value.status;
-  return "unknown";
+function setHealth(ok, message) {
+  healthDot.classList.toggle("is-ok", ok);
+  healthDot.classList.toggle("is-error", !ok);
+  healthText.textContent = message;
 }
 
 function applyState(state) {
   LED_IDS.forEach((ledId) => {
-    const mode = normalizeMode(state[ledId]);
+    const mode = state[ledId] || "off";
     const card = document.querySelector(`[data-led="${ledId}"]`);
-    const badge = document.querySelector(`#status-${ledId}`);
+    const lamp = document.querySelector(`#lamp-${ledId}`);
+    const stateText = document.querySelector(`#state-${ledId}`);
 
     card.dataset.state = mode;
-    badge.textContent = mode === "blinking" ? "BLINK" : mode === "unknown" ? "???" : mode.toUpperCase();
+    lamp.className = `lamp is-${mode}`;
+    stateText.textContent = mode;
   });
-}
-
-function setLoading(control, loading) {
-  control.classList.toggle("is-loading", loading);
-  const icon = control.querySelector("[aria-hidden='true']");
-  if (!icon) return;
-
-  if (loading) {
-    icon.dataset.previousClass = icon.className;
-    icon.className = "spinner-icon";
-  } else if (icon.dataset.previousClass) {
-    icon.className = icon.dataset.previousClass;
-    delete icon.dataset.previousClass;
-  }
 }
 
 async function refreshState() {
@@ -102,44 +58,35 @@ async function refreshState() {
       apiRequest("/api/health"),
       apiRequest("/api/leds/state"),
     ]);
-    setConnection(Boolean(health.ok) ? "connected" : "disconnected");
-    clearError();
+    setHealth(Boolean(health.ok), "接続中");
     applyState(state);
   } catch (error) {
-    setConnection("disconnected");
+    setHealth(false, "未接続");
     console.error(error);
   }
 }
 
-async function runLedAction(button) {
-  const ledId = button.dataset.led;
-  const action = button.dataset.action;
+async function runLedAction(ledId, action) {
   const slider = document.querySelector(`#interval-${ledId}`);
   const body = action === "blink" ? JSON.stringify({ interval_ms: Number(slider.value) }) : undefined;
 
-  await runCommand(button, `/api/leds/${ledId}/${action}`, { method: "POST", body }, {
-    onError: `Oops! Couldn't ${action} ${ledId.toUpperCase()}. Try again?`,
-  });
+  await runCommand(`/api/leds/${ledId}/${action}`, { method: "POST", body });
 }
 
-async function runCommand(control, path, options, messages = {}) {
+async function runCommand(path, options) {
   busy = true;
-  clearError();
-  setLoading(control, true);
-  setControlsDisabled(false);
+  document.body.classList.add("is-busy");
 
   try {
     const state = await apiRequest(path, options);
-    setConnection("connected");
+    setHealth(true, "接続中");
     applyState(state);
   } catch (error) {
-    setConnection("disconnected");
-    showError(messages.onError || "Operation failed. Check your connection and try again.");
+    setHealth(false, "操作失敗");
     console.error(error);
   } finally {
     busy = false;
-    setLoading(control, false);
-    setControlsDisabled(connectionBadge.classList.contains("is-disconnected"));
+    document.body.classList.remove("is-busy");
   }
 }
 
@@ -155,47 +102,32 @@ function bindSliders() {
   chaseInterval.addEventListener("input", () => {
     chaseIntervalOutput.textContent = `${chaseInterval.value}ms`;
   });
-
-  chaseCycles.addEventListener("input", () => {
-    chaseCyclesOutput.textContent = `${chaseCycles.value}x`;
-  });
 }
 
 function bindButtons() {
   document.querySelectorAll("[data-action][data-led]").forEach((button) => {
-    button.addEventListener("click", () => runLedAction(button));
-  });
-
-  document.querySelector("#allOffButton").addEventListener("click", (event) => {
-    runCommand(event.currentTarget, "/api/preset/all-off", { method: "POST" }, {
-      onError: "Couldn't turn all LEDs off. Check your connection!",
+    button.addEventListener("click", () => {
+      runLedAction(button.dataset.led, button.dataset.action);
     });
   });
 
-  document.querySelector("#chaseButton").addEventListener("click", (event) => {
-    runCommand(
-      event.currentTarget,
-      "/api/preset/chase",
-      {
-        method: "POST",
-        body: JSON.stringify({
-          interval_ms: Number(chaseInterval.value),
-          cycles: Number(chaseCycles.value),
-        }),
-      },
-      {
-        onError: "Couldn't start the chase pattern. Try again?",
-      },
-    );
+  document.querySelector("#allOffButton").addEventListener("click", () => {
+    runCommand("/api/preset/all-off", { method: "POST" });
   });
 
-  retryButton.addEventListener("click", refreshState);
-  connectionBadge.addEventListener("click", refreshState);
+  document.querySelector("#chaseButton").addEventListener("click", () => {
+    runCommand("/api/preset/chase", {
+      method: "POST",
+      body: JSON.stringify({
+        interval_ms: Number(chaseInterval.value),
+        cycles: Number(chaseCycles.value),
+      }),
+    });
+  });
 }
 
 bindSliders();
 bindButtons();
-setConnection("checking");
 refreshState();
 refreshTimer = window.setInterval(refreshState, REFRESH_MS);
 

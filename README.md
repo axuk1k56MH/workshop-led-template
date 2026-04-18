@@ -42,10 +42,11 @@ workshop-led-template
 │   ├── index.html
 │   ├── script.js
 │   └── style.css
-├── backend-ui
-│   ├── index.html
-│   ├── script.js
-│   └── style.css
+├── examples
+│   └── legacy-ui
+│       ├── index.html
+│       ├── script.js
+│       └── style.css
 ├── pi-setup
 │   ├── AP_SETUP.md
 │   ├── nginx-site.conf
@@ -55,7 +56,7 @@ workshop-led-template
     └── led-workshop-api.service
 ```
 
-`frontend` が本番推奨の新UIです。`backend-ui` は前UIを残した切替用です。
+`frontend` が本番推奨の標準UIです。`examples/legacy-ui` は以前のスマホ向けUIを残した比較・退避用です。
 
 ## Quick Start On Mac / PC
 
@@ -74,14 +75,14 @@ USE_MOCK_GPIO=1 python app.py
 http://127.0.0.1:8000
 ```
 
-この `8000` では FastAPI が `backend-ui` の前UIを配信します。API確認用として手早く使えます。
+この `8000` では FastAPI が `frontend` の標準UIを配信します。API確認用として手早く使えます。
 
-## Test The New UI
+## Test The Legacy UI
 
-新UIを開発・確認する場合は、バックエンドを起動したまま別ターミナルで実行します。
+旧UIを確認する場合は、バックエンドを起動したまま別ターミナルで実行します。
 
 ```bash
-cd workshop-led-template/frontend
+cd workshop-led-template/examples/legacy-ui
 python3 -m http.server 5500 --bind 0.0.0.0
 ```
 
@@ -111,13 +112,13 @@ http://192.168.12.4:5500/?api=http://192.168.12.4:8000
 4. nginx 設定を配置
 5. `pi-setup/AP_SETUP.md` に沿って Wi-Fi AP を設定
 
-新UIを本番配信する場合:
+標準UIを本番配信する場合:
 
 ```bash
 sudo cp /opt/workshop-led-template/pi-setup/nginx-site-frontend.conf /etc/nginx/sites-available/led-workshop
 ```
 
-前UIを本番配信する場合:
+旧UIを本番配信する場合:
 
 ```bash
 sudo cp /opt/workshop-led-template/pi-setup/nginx-site-legacy.conf /etc/nginx/sites-available/led-workshop

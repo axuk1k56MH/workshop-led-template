@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>LED Control</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main>
+      <header class="app-header">
+        <div class="header-inner">
+          <div class="title-block">
+            <div class="title-row">
+              <span class="zap-icon" aria-hidden="true"></span>
+              <h1>LED Control</h1>
+            </div>
+            <p>Raspberry Pi Workshop</p>
+          </div>
+          <button type="button" id="connectionBadge" class="connection-badge is-checking">
+            <span class="badge-icon" aria-hidden="true"></span>
+            <span id="connectionText">Checking...</span>
+          </button>
+        </div>
+      </header>
+
+      <div class="app-container">
+        <section id="errorMessage" class="message is-hidden" role="alert"></section>
+
+        <section id="offlinePanel" class="offline-panel is-hidden">
+          <span class="offline-icon" aria-hidden="true"></span>
+          <p>Make sure you're connected to the Raspberry Pi Wi-Fi network</p>
+          <button type="button" id="retryButton" class="button button-outline">Try Again</button>
+        </section>
+
+        <section class="led-list" aria-label="LED controls">
+          <article class="led-card" data-led="led1" data-state="unknown">
+            <div class="card-header">
+              <div class="led-title-group">
+                <span class="bulb-icon" aria-hidden="true"></span>
+                <h2>LED 1</h2>
+              </div>
+              <span id="status-led1" class="status-badge">???</span>
+            </div>
+            <div class="card-body">
+              <div class="button-row" role="group" aria-label="LED 1 controls">
+                <button type="button" class="button button-action" data-action="on" data-led="led1">
+                  <span class="power-on-icon" aria-hidden="true"></span>
+                  <span>ON</span>
+                </button>
+                <button type="button" class="button button-action" data-action="off" data-led="led1">
+                  <span class="power-off-icon" aria-hidden="true"></span>
+                  <span>OFF</span>
+                </button>
+                <button type="button" class="button button-action" data-action="blink" data-led="led1">
+                  <span class="spark-icon" aria-hidden="true"></span>
+                  <span>BLINK</span>
+                </button>
+              </div>
+              <label class="slider-block">
+                <span class="slider-label">
+                  <span>Blink Speed</span>
+                  <output id="interval-output-led1">500ms</output>
+                </span>
+                <input id="interval-led1" type="range" min="100" max="2000" step="100" value="500" />
+                <span class="slider-scale">
+                  <span>Fast</span>
+                  <span>Slow</span>
+                </span>
+              </label>
+            </div>
+          </article>
+
+          <article class="led-card" data-led="led2" data-state="unknown">
+            <div class="card-header">
+              <div class="led-title-group">
+                <span class="bulb-icon" aria-hidden="true"></span>
+                <h2>LED 2</h2>
+              </div>
+              <span id="status-led2" class="status-badge">???</span>
+            </div>
+            <div class="card-body">
+              <div class="button-row" role="group" aria-label="LED 2 controls">
+                <button type="button" class="button button-action" data-action="on" data-led="led2">
+                  <span class="power-on-icon" aria-hidden="true"></span>
+                  <span>ON</span>
+                </button>
+                <button type="button" class="button button-action" data-action="off" data-led="led2">
+                  <span class="power-off-icon" aria-hidden="true"></span>
+                  <span>OFF</span>
+                </button>
+                <button type="button" class="button button-action" data-action="blink" data-led="led2">
+                  <span class="spark-icon" aria-hidden="true"></span>
+                  <span>BLINK</span>
+                </button>
+              </div>
+              <label class="slider-block">
+                <span class="slider-label">
+                  <span>Blink Speed</span>
+                  <output id="interval-output-led2">500ms</output>
+                </span>
+                <input id="interval-led2" type="range" min="100" max="2000" step="100" value="500" />
+                <span class="slider-scale">
+                  <span>Fast</span>
+                  <span>Slow</span>
+                </span>
+              </label>
+            </div>
+          </article>
+
+          <article class="led-card" data-led="led3" data-state="unknown">
+            <div class="card-header">
+              <div class="led-title-group">
+                <span class="bulb-icon" aria-hidden="true"></span>
+                <h2>LED 3</h2>
+              </div>
+              <span id="status-led3" class="status-badge">???</span>
+            </div>
+            <div class="card-body">
+              <div class="button-row" role="group" aria-label="LED 3 controls">
+                <button type="button" class="button button-action" data-action="on" data-led="led3">
+                  <span class="power-on-icon" aria-hidden="true"></span>
+                  <span>ON</span>
+                </button>
+                <button type="button" class="button button-action" data-action="off" data-led="led3">
+                  <span class="power-off-icon" aria-hidden="true"></span>
+                  <span>OFF</span>
+                </button>
+                <button type="button" class="button button-action" data-action="blink" data-led="led3">
+                  <span class="spark-icon" aria-hidden="true"></span>
+                  <span>BLINK</span>
+                </button>
+              </div>
+              <label class="slider-block">
+                <span class="slider-label">
+                  <span>Blink Speed</span>
+                  <output id="interval-output-led3">500ms</output>
+                </span>
+                <input id="interval-led3" type="range" min="100" max="2000" step="100" value="500" />
+                <span class="slider-scale">
+                  <span>Fast</span>
+                  <span>Slow</span>
+                </span>
+              </label>
+            </div>
+          </article>
+        </section>
+
+        <section class="quick-card">
+          <h2>Quick Actions</h2>
+
+          <div class="chase-panel">
+            <p>Chase Pattern</p>
+            <label class="slider-block">
+              <span class="slider-label">
+                <span>Speed</span>
+                <output id="chaseIntervalOutput">200ms</output>
+              </span>
+              <input id="chaseInterval" type="range" min="100" max="1000" step="50" value="200" />
+            </label>
+            <label class="slider-block">
+              <span class="slider-label">
+                <span>Cycles</span>
+                <output id="chaseCyclesOutput">5x</output>
+              </span>
+              <input id="chaseCycles" type="range" min="1" max="10" step="1" value="5" />
+            </label>
+          </div>
+
+          <div class="preset-row">
+            <button type="button" id="allOffButton" class="button button-outline">
+              <span class="power-on-icon" aria-hidden="true"></span>
+              <span>All Off</span>
+            </button>
+            <button type="button" id="chaseButton" class="button button-primary">
+              <span class="zap-icon" aria-hidden="true"></span>
+              <span>Chase Pattern</span>
+            </button>
+          </div>
+        </section>
+
+        <footer>
+          <p>Workshop LED Controller v1.0</p>
+        </footer>
+      </div>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
