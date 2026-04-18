@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Wi-Fi LED Workshop</title>
+    <link rel="stylesheet" href="/assets/style.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">Browser to GPIO</p>
+          <h1>Wi-Fi LED Control</h1>
+          <p class="lead">同じ Wi-Fi につないだスマホや PC から、班の Raspberry Pi の LED を操作します。</p>
+        </div>
+        <div class="status-panel" aria-live="polite">
+          <span class="status-dot" id="healthDot"></span>
+          <span id="healthText">接続確認中</span>
+        </div>
+      </header>
+
+      <section class="led-grid" aria-label="LED controls">
+        <article class="led-card" data-led="led1">
+          <div class="led-card__top">
+            <h2>LED1</h2>
+            <span class="led-pin">GPIO17</span>
+          </div>
+          <div class="lamp" id="lamp-led1" aria-hidden="true"></div>
+          <p class="led-state" id="state-led1">off</p>
+          <div class="button-row" role="group" aria-label="LED1 controls">
+            <button type="button" data-action="on" data-led="led1">ON</button>
+            <button type="button" data-action="off" data-led="led1">OFF</button>
+            <button type="button" data-action="blink" data-led="led1">BLINK</button>
+          </div>
+          <label class="slider-row">
+            <span>点滅間隔</span>
+            <output id="interval-output-led1">500ms</output>
+            <input id="interval-led1" type="range" min="100" max="2000" step="100" value="500" />
+          </label>
+        </article>
+
+        <article class="led-card" data-led="led2">
+          <div class="led-card__top">
+            <h2>LED2</h2>
+            <span class="led-pin">GPIO27</span>
+          </div>
+          <div class="lamp" id="lamp-led2" aria-hidden="true"></div>
+          <p class="led-state" id="state-led2">off</p>
+          <div class="button-row" role="group" aria-label="LED2 controls">
+            <button type="button" data-action="on" data-led="led2">ON</button>
+            <button type="button" data-action="off" data-led="led2">OFF</button>
+            <button type="button" data-action="blink" data-led="led2">BLINK</button>
+          </div>
+          <label class="slider-row">
+            <span>点滅間隔</span>
+            <output id="interval-output-led2">500ms</output>
+            <input id="interval-led2" type="range" min="100" max="2000" step="100" value="500" />
+          </label>
+        </article>
+
+        <article class="led-card" data-led="led3">
+          <div class="led-card__top">
+            <h2>LED3</h2>
+            <span class="led-pin">GPIO22</span>
+          </div>
+          <div class="lamp" id="lamp-led3" aria-hidden="true"></div>
+          <p class="led-state" id="state-led3">off</p>
+          <div class="button-row" role="group" aria-label="LED3 controls">
+            <button type="button" data-action="on" data-led="led3">ON</button>
+            <button type="button" data-action="off" data-led="led3">OFF</button>
+            <button type="button" data-action="blink" data-led="led3">BLINK</button>
+          </div>
+          <label class="slider-row">
+            <span>点滅間隔</span>
+            <output id="interval-output-led3">500ms</output>
+            <input id="interval-led3" type="range" min="100" max="2000" step="100" value="500" />
+          </label>
+        </article>
+      </section>
+
+      <section class="preset-bar" aria-label="Preset controls">
+        <button type="button" id="allOffButton" class="preset-button danger">すべて消灯</button>
+        <div class="chase-controls">
+          <label>
+            <span>追いかけ間隔</span>
+            <output id="chaseIntervalOutput">200ms</output>
+            <input id="chaseInterval" type="range" min="100" max="1000" step="50" value="200" />
+          </label>
+          <label>
+            <span>回数</span>
+            <input id="chaseCycles" type="number" min="1" max="20" value="5" />
+          </label>
+          <button type="button" id="chaseButton" class="preset-button">追いかけ点灯</button>
+        </div>
+      </section>
+    </main>
+
+    <script src="/assets/script.js"></script>
+  </body>
+</html>

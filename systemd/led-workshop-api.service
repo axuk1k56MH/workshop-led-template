@@ -1,0 +1,16 @@
+[Unit]
+Description=LED Workshop FastAPI service
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/workshop-led-template/backend
+ExecStart=/opt/workshop-led-template/backend/.venv/bin/python /opt/workshop-led-template/backend/app.py
+Restart=always
+RestartSec=3
+User=pi
+Group=pi
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target
