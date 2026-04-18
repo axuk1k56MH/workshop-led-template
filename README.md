@@ -19,7 +19,9 @@ workshop-led-template
 │   └── style.css
 ├── pi-setup
 │   ├── AP_SETUP.md
-│   └── nginx-site.conf
+│   ├── nginx-site.conf
+│   ├── nginx-site-frontend.conf
+│   └── nginx-site-legacy.conf
 └── systemd
     └── led-workshop-api.service
 ```
@@ -76,7 +78,7 @@ http://127.0.0.1:5500/?api=http://127.0.0.1:8000
 1. リポジトリを `/opt/workshop-led-template` に配置
 2. `backend` に venv を作成して `pip install -r requirements.txt`
 3. `systemd/led-workshop-api.service` を `/etc/systemd/system/` へ配置
-4. `pi-setup/nginx-site.conf` を nginx に配置
+4. 新UIなら `pi-setup/nginx-site-frontend.conf`、前UIなら `pi-setup/nginx-site-legacy.conf` を nginx に配置
 5. `pi-setup/AP_SETUP.md` に沿って Wi-Fi AP を設定
 
 ## GPIO

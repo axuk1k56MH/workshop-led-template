@@ -140,8 +140,21 @@ sudo systemctl enable --now led-workshop-api
 
 ## nginx
 
+新UIを本番配信する場合:
+
 ```bash
-sudo cp /opt/workshop-led-template/pi-setup/nginx-site.conf /etc/nginx/sites-available/led-workshop
+sudo cp /opt/workshop-led-template/pi-setup/nginx-site-frontend.conf /etc/nginx/sites-available/led-workshop
+```
+
+前UIを本番配信する場合:
+
+```bash
+sudo cp /opt/workshop-led-template/pi-setup/nginx-site-legacy.conf /etc/nginx/sites-available/led-workshop
+```
+
+どちらか一方をコピーしたあと、nginx に有効化します。
+
+```bash
 sudo ln -s /etc/nginx/sites-available/led-workshop /etc/nginx/sites-enabled/led-workshop
 sudo rm -f /etc/nginx/sites-enabled/default
 sudo nginx -t
