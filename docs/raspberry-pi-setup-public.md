@@ -22,7 +22,7 @@ https://github.com/axuk1k56MH/workshop-led-template
 Raspberry Pi: 192.168.4.1
   ├ nginx :80
   │   ├ Web UI
-  │   └ /api/ → FastAPI :8000
+  │   └ /api/ → FastAPI :8010
   ├ FastAPI
   └ GPIO LED
 ```
@@ -130,22 +130,22 @@ python app.py
 同じWi-Fi上のスマホやPCから開きます。
 
 ```text
-http://<Raspberry PiのIP>:8000
+http://<Raspberry PiのIP>:8010
 ```
 
 例:
 
 ```text
-http://192.168.12.20:8000
+http://192.168.12.20:8010
 ```
 
 Pi上でAPI確認する場合:
 
 ```bash
-curl http://127.0.0.1:8000/api/health
-curl http://127.0.0.1:8000/api/leds/state
-curl -X POST http://127.0.0.1:8000/api/leds/led1/on
-curl -X POST http://127.0.0.1:8000/api/preset/all-off
+curl http://127.0.0.1:8010/api/health
+curl http://127.0.0.1:8010/api/leds/state
+curl -X POST http://127.0.0.1:8010/api/leds/led1/on
+curl -X POST http://127.0.0.1:8010/api/preset/all-off
 ```
 
 LEDが点灯・消灯すれば、API と GPIO は動作しています。
@@ -223,7 +223,7 @@ sudo systemctl status led-workshop-api
 API確認:
 
 ```bash
-curl http://127.0.0.1:8000/api/health
+curl http://127.0.0.1:8010/api/health
 ```
 
 ログ確認:
@@ -348,17 +348,17 @@ http://192.168.4.1
 
 ## トラブルシュート
 
-### `http://<PiのIP>:8000` が開かない
+### `http://<PiのIP>:8010` が開かない
 
 - `python app.py` または `led-workshop-api` が起動しているか確認
 - `sudo systemctl status led-workshop-api`
-- `curl http://127.0.0.1:8000/api/health`
+- `curl http://127.0.0.1:8010/api/health`
 
 ### nginxの画面は出るがLED操作できない
 
 - `/api/` proxy が動いていない可能性があります
 - `sudo nginx -t`
-- `curl http://127.0.0.1:8000/api/health`
+- `curl http://127.0.0.1:8010/api/health`
 - `curl http://<PiのIP>/api/health`
 
 ### LEDが点かない

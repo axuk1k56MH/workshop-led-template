@@ -68,7 +68,7 @@ Raspberry Pi
   ├ Wi-Fi AP
   ├ nginx :80
   │   ├ Web UI
-  │   └ /api/ → FastAPI :8000
+  │   └ /api/ → FastAPI :8010
   ├ FastAPI
   └ GPIO LED
 ```

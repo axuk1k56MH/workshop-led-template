@@ -20,7 +20,7 @@ Raspberry Pi を Wi-Fi 親機にして、参加者がスマホやPCのブラウ�
 Raspberry Pi: 192.168.4.1
   ├ nginx :80
   │   ├ Web UI
-  │   └ /api/ → FastAPI :8000
+  │   └ /api/ → FastAPI :8010
   ├ FastAPI
   └ GPIO LED
 ```
@@ -72,10 +72,10 @@ USE_MOCK_GPIO=1 python app.py
 ブラウザで開きます。
 
 ```text
-http://127.0.0.1:8000
+http://127.0.0.1:8010
 ```
 
-この `8000` では FastAPI が `frontend` の標準UIを配信します。API確認用として手早く使えます。
+この `8010` では FastAPI が `frontend` の標準UIを配信します。API確認用として手早く使えます。
 
 ## Test The Legacy UI
 
@@ -89,19 +89,19 @@ python3 -m http.server 5500 --bind 0.0.0.0
 Mac/PCのブラウザ:
 
 ```text
-http://127.0.0.1:5500/?api=http://127.0.0.1:8000
+http://127.0.0.1:5500/?api=http://127.0.0.1:8010
 ```
 
 同じWi-Fi上のスマホ:
 
 ```text
-http://<MacのIP>:5500/?api=http://<MacのIP>:8000
+http://<MacのIP>:5500/?api=http://<MacのIP>:8010
 ```
 
 例:
 
 ```text
-http://192.168.12.4:5500/?api=http://192.168.12.4:8000
+http://192.168.12.4:5500/?api=http://192.168.12.4:8010
 ```
 
 ## Raspberry Pi Deployment

@@ -102,7 +102,7 @@
 Raspberry Pi: 192.168.4.1
   ├ nginx :80
   │   ├ Web UI
-  │   └ /api/ → FastAPI :8000
+  │   └ /api/ → FastAPI :8010
   ├ FastAPI
   └ GPIO LED</pre>
     <p>参加者は班の Wi-Fi に接続し、ブラウザで次を開きます。</p>
@@ -167,12 +167,12 @@ python3 -m venv .venv
 pip install -r requirements.txt
 python app.py</pre>
     <p>同じWi-Fi上のスマホやPCから開きます。</p>
-    <pre>http://&lt;Raspberry PiのIP&gt;:8000</pre>
+    <pre>http://&lt;Raspberry PiのIP&gt;:8010</pre>
     <p>Pi上でAPI確認する場合:</p>
-    <pre>curl http://127.0.0.1:8000/api/health
-curl http://127.0.0.1:8000/api/leds/state
-curl -X POST http://127.0.0.1:8000/api/leds/led1/on
-curl -X POST http://127.0.0.1:8000/api/preset/all-off</pre>
+    <pre>curl http://127.0.0.1:8010/api/health
+curl http://127.0.0.1:8010/api/leds/state
+curl -X POST http://127.0.0.1:8010/api/leds/led1/on
+curl -X POST http://127.0.0.1:8010/api/preset/all-off</pre>
 
     <h2>5. /opt に本番配置</h2>
     <pre>sudo mkdir -p /opt/workshop-led-template
@@ -196,7 +196,7 @@ Group=teacher</pre>
 sudo systemctl enable --now led-workshop-api</pre>
     <p>状態確認:</p>
     <pre>sudo systemctl status led-workshop-api
-curl http://127.0.0.1:8000/api/health
+curl http://127.0.0.1:8010/api/health
 journalctl -u led-workshop-api -f</pre>
 
     <h2>7. nginxでWeb UIを配信</h2>
@@ -246,17 +246,17 @@ curl -X POST http://192.168.4.1/api/preset/all-off</pre>
 URL: http://192.168.4.1</pre>
 
     <h2>トラブルシュート</h2>
-    <h3>http://&lt;PiのIP&gt;:8000 が開かない</h3>
+    <h3>http://&lt;PiのIP&gt;:8010 が開かない</h3>
     <ul>
       <li><code>python app.py</code> または <code>led-workshop-api</code> が起動しているか確認</li>
       <li><code>sudo systemctl status led-workshop-api</code></li>
-      <li><code>curl http://127.0.0.1:8000/api/health</code></li>
+      <li><code>curl http://127.0.0.1:8010/api/health</code></li>
     </ul>
     <h3>nginxの画面は出るがLED操作できない</h3>
     <ul>
       <li><code>/api/</code> proxy が動いていない可能性があります</li>
       <li><code>sudo nginx -t</code></li>
-      <li><code>curl http://127.0.0.1:8000/api/health</code></li>
+      <li><code>curl http://127.0.0.1:8010/api/health</code></li>
       <li><code>curl http://&lt;PiのIP&gt;/api/health</code></li>
     </ul>
     <h3>LEDが点かない</h3>
